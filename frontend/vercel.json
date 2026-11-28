@@ -4,7 +4,13 @@
   "installCommand": "npm ci",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "rewrites": [
+    {
+      "source": "/neon-auth/:path*",
+      "destination": "https://ep-shiny-lake-bib7iq3i.neonauth.c-5.ap-southeast-1.aws.neon.tech/neondb/auth/:path*"
+    },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",

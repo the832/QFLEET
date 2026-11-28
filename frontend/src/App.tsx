@@ -90,6 +90,7 @@ export default function App() {
           <DisruptionDock />
           <EventFeed />
           <MissionPanel />
+          <MobileMetricsToggle />
           <SimControls />
         </>
       )}
@@ -102,7 +103,7 @@ export default function App() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.25 }}
-            className="absolute left-[76px] right-3 top-20 bottom-4 z-20"
+            className="absolute left-[76px] right-3 top-20 bottom-4 z-20 max-md:left-2 max-md:right-2 max-md:top-[58px] max-md:bottom-[72px]"
           >
             <ErrorBoundary label={view}>
             <Suspense fallback={<div className="glass rounded-2xl h-full grid place-items-center text-dim">Loading…</div>}>
@@ -123,5 +124,20 @@ export default function App() {
       <DemoCaption />
       <Toasts />
     </div>
+  );
+}
+
+/** Phones: the mission metrics open as a sheet over the map instead of a permanent side column. */
+function MobileMetricsToggle() {
+  const open = useStore((s) => s.mobileMetrics);
+  const hasPlan = useStore((s) => !!s.plan);
+  if (!hasPlan) return null;
+  return (
+    <button
+      className={`md:hidden absolute right-2 top-[58px] z-30 btn !py-1.5 !text-[11px] ${open ? "btn-active" : ""}`}
+      onClick={() => useStore.getState().set({ mobileMetrics: !open })}
+    >
+      {open ? "Hide metrics" : "Metrics"}
+    </button>
   );
 }

@@ -11,10 +11,52 @@ export interface AuthUser {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let client: any = null;
 let cached: { token: string; exp: number } | null = null;
+let directUrl: string | null = null;
+let viaProxy = false;
 
-export function initAuth(url: string | null) {
-  client = url ? createAuthClient(url) : null;
+const isLocal = () => ["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname);
+
+/** Does this site forward /neon-auth/* to Neon Auth (Vercel rewrite or the backend's proxy route)? */
+async function proxyAvailable(): Promise<boolean> {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 6000);
+    const r = await fetch(`${window.location.origin}/neon-auth/get-session`, { credentials: "include", signal: ctrl.signal });
+    clearTimeout(t);
+    return (r.headers.get("content-type") ?? "").includes("json");
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Sign-in goes through our own domain (/neon-auth/*) whenever the site provides that route. The browser then never
+ * needs to resolve Neon's hostname (some ISP/college DNS can't), and the session cookie is first-party.
+ * On localhost Neon is trusted directly.
+ */
+export async function initAuth(url: string | null) {
+  directUrl = url;
   cached = null;
+  if (!url) {
+    client = null;
+    return;
+  }
+  viaProxy = !isLocal() && (await proxyAvailable());
+  client = createAuthClient(viaProxy ? `${window.location.origin}/neon-auth` : url);
+}
+
+/** Google's redirect has to visit Neon's own domain: check this network can resolve it before leaving the page. */
+async function neonReachable(): Promise<boolean> {
+  if (!directUrl) return false;
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 6000);
+    await fetch(`${directUrl}/get-session`, { mode: "no-cors", cache: "no-store", signal: ctrl.signal });
+    clearTimeout(t);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export const authEnabled = () => !!client;
@@ -31,7 +73,11 @@ function expOf(token: string): number {
 function errText(e: unknown, fallback: string): string {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const x = e as any;
-  return x?.error?.message || x?.message || x?.statusText || fallback;
+  const msg = x?.error?.message || x?.message || x?.statusText || fallback;
+  if (/failed to fetch|networkerror|load failed/i.test(msg)) {
+    return "Can't reach the sign-in service from this network. Try again, or explore the demo without an account.";
+  }
+  return msg;
 }
 
 export async function currentUser(): Promise<AuthUser | null> {
@@ -80,6 +126,9 @@ export async function signUp(name: string, email: string, password: string) {
 /** Google OAuth via Neon Auth: redirects to Google, then back here with a one-time session verifier. */
 export async function signInWithGoogle() {
   if (!client) throw new Error("Sign-in is not configured");
+  if (!(await neonReachable())) {
+    throw new Error("Google sign-in is blocked on this network. Use email sign-in, or explore the demo without an account.");
+  }
   try {
     const r = await client.signIn.social({ provider: "google", callbackURL: `${window.location.origin}/` });
     if (r?.error) throw new Error(errText(r, "Google sign-in failed"));

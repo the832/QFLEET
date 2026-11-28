@@ -17,20 +17,20 @@ export function TopBar() {
   const src = s.plan?.matrix_source;
 
   return (
-    <header className="absolute top-0 inset-x-0 z-30 h-16 px-4 flex items-center gap-3 glass border-x-0 border-t-0">
+    <header className="absolute top-0 inset-x-0 z-30 h-16 px-4 flex items-center gap-3 glass border-x-0 border-t-0 max-md:h-[52px] max-md:px-2 max-md:gap-1.5">
       <Wordmark compact />
-      <div className="h-8 w-px bg-line mx-1" />
+      <div className="h-8 w-px bg-line mx-1 max-md:hidden" />
 
       {s.view === "supply" ? (
-        <div className="flex items-center gap-2 text-[12px] text-dim">
+        <div className="flex items-center gap-2 text-[12px] text-dim max-md:hidden">
           <span className="font-semibold text-ink">Supply Network</span>
           <span className="hidden xl:inline">· hub-and-spoke replenishment, every delivery wave planned by quantum annealing</span>
         </div>
       ) : (
       <div className="flex items-center gap-2">
-        <MapPinned size={15} className="text-cyan" />
+        <MapPinned size={15} className="text-cyan max-md:hidden" />
         <select
-          className="input !py-1.5"
+          className="input !py-1.5 max-md:max-w-[104px] max-md:!pl-2 max-md:!text-[12px]"
           value={s.city}
           onChange={(e) => {
             s.set({ city: e.target.value });
@@ -48,7 +48,7 @@ export function TopBar() {
         <NumField label="Fleet" title="Number of vehicles (2–10) · Enter to generate" min={2} max={10} width="w-14"
           value={s.nVehicles} onCommit={(v, go) => { s.set({ nVehicles: v }); if (go) setTimeout(() => useStore.getState().loadScenario(), 0); }} />
         <button
-          className="btn !px-2.5"
+          className="btn !px-2.5 max-md:hidden"
           disabled={s.busy}
           title="New random operations"
           onClick={() => {
@@ -58,7 +58,7 @@ export function TopBar() {
         >
           <Dices size={15} />
         </button>
-        <button className="btn" onClick={() => s.loadScenario()} disabled={s.busy}>
+        <button className="btn max-md:hidden" onClick={() => s.loadScenario()} disabled={s.busy}>
           Generate
         </button>
       </div>
@@ -66,7 +66,7 @@ export function TopBar() {
 
       <div className="flex-1" />
 
-      <div className="flex items-center gap-1 p-1 rounded-xl border border-line bg-white/[0.02]">
+      <div className="flex items-center gap-1 p-1 rounded-xl border border-line bg-white/[0.02] max-md:hidden">
         {keys.map((k) => (
           <button
             key={k}
@@ -97,14 +97,15 @@ export function TopBar() {
       </div>
 
       {s.view !== "supply" && (
-      <button className="btn-quantum flex items-center gap-2 whitespace-nowrap" onClick={() => s.optimize()} disabled={s.busy || !s.scenario}>
+      <button className="btn-quantum flex items-center gap-2 whitespace-nowrap max-md:!px-2.5 max-md:!py-2 max-md:gap-1.5" onClick={() => s.optimize()} disabled={s.busy || !s.scenario}>
         {s.busy ? <Loader2 size={15} className="animate-spin" /> : <Sparkles size={15} />}
-        {s.plan ? "RE-OPTIMIZE" : "OPTIMIZE FLEET"}
+        <span className="max-md:hidden">{s.plan ? "RE-OPTIMIZE" : "OPTIMIZE FLEET"}</span>
+        <span className="md:hidden">{s.plan ? "RE-PLAN" : "PLAN"}</span>
       </button>
       )}
 
       <div
-        className="flex items-center gap-1.5 text-[10px] font-semibold tracking-wider px-2 py-1.5 rounded-md border border-line whitespace-nowrap"
+        className="flex items-center gap-1.5 text-[10px] font-semibold tracking-wider px-2 py-1.5 rounded-md border border-line whitespace-nowrap max-md:hidden"
         title={src === "osrm" ? "Live road network distances (OSRM)" : "Geodesic distance model"}
       >
         {src === "haversine" ? <WifiOff size={12} className="text-amber" /> : <Wifi size={12} className="text-lime" />}
@@ -127,7 +128,7 @@ function NumField({ label, title, min, max, width, value, onCommit }: {
     if (v !== value || generate) onCommit(v, generate);
   };
   return (
-    <label className="flex items-center gap-1.5 text-xs text-dim" title={title}>
+    <label className="flex items-center gap-1.5 text-xs text-dim max-md:hidden" title={title}>
       <span className="hidden 2xl:inline">{label}</span>
       <input
         type="number"

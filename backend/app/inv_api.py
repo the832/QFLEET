@@ -174,6 +174,8 @@ class OrgReq(BaseModel):
 @router.post("/orgs")
 def create_org(req: OrgReq, user: dict = Depends(current_user)):
     from .data import CITIES
+    if user.get("guest"):
+        raise HTTPException(401, "Sign in to create your own organisation")
     if req.sector not in inv.TEMPLATES or req.city not in CITIES:
         raise HTTPException(400, "Unknown sector or city")
     out = _run(lambda db: inv.org_dict(inv.create_org(db, req.name, req.sector, req.city, req.branches,

@@ -57,7 +57,7 @@ export function BranchPortal() {
         </div>
       )}
 
-      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] gap-3">
+      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] max-md:grid-cols-1 gap-3">
         <div className="rounded-2xl border border-line bg-white/[0.02] p-4">
           <div className="flex items-center justify-between mb-2">
             <div className="label">My shelf · days of cover</div>

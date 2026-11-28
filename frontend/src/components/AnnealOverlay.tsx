@@ -169,7 +169,7 @@ export function AnnealOverlay() {
               {!anneal && <span className="num text-dim">· {wait.toFixed(1)}s</span>}
             </div>
 
-            <div className="mt-4 grid grid-cols-4 gap-2">
+            <div className="mt-4 grid grid-cols-4 max-md:grid-cols-2 gap-2">
               {[
                 ["Logical qubits", q ? q.total_qubits : "—"],
                 ["Trotter slices", q?.stage1.trotter_slices ?? 16],

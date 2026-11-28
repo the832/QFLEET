@@ -43,7 +43,7 @@ export function Team() {
 
   return (
     <div className="flex flex-col gap-4 max-w-[1100px]">
-      <section className="grid grid-cols-2 gap-3">
+      <section className="grid grid-cols-2 max-md:grid-cols-1 gap-3">
         <RoleCard icon={Warehouse} title="Main operator" tone="text-cyan" items={CAN.admin}
           sub="Runs the central store. The person who created the organisation is the owner." />
         <RoleCard icon={Building2} title="Branch operator" tone="text-violet" items={CAN.branch}

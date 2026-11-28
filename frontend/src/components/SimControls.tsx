@@ -39,7 +39,7 @@ export function SimControls() {
   const pct = plan ? ((simTime - planStart) / Math.max(1, end - planStart)) * 100 : 0;
 
   return (
-    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 glass hud rounded-2xl px-4 py-3 flex items-center gap-4 w-[min(620px,calc(100vw-790px))] min-w-[380px] max-[1180px]:left-[calc(50%-150px)]">
+    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 glass hud rounded-2xl px-4 py-3 flex items-center gap-4 w-[min(620px,calc(100vw-790px))] min-w-[380px] max-[1180px]:left-[calc(50%-150px)] max-md:!left-2 max-md:!right-2 max-md:!translate-x-0 max-md:!w-auto max-md:!min-w-0 max-md:bottom-[72px] max-md:px-3 max-md:py-2 max-md:gap-2">
       <button
         className={`w-11 h-11 rounded-full flex items-center justify-center border transition-all ${
           playing ? "border-magenta/60 bg-magenta/15 text-magenta" : "border-cyan/60 bg-cyan/15 text-cyan"
@@ -54,7 +54,7 @@ export function SimControls() {
         {playing ? <Pause size={18} /> : <Play size={18} className="ml-0.5" />}
       </button>
       <div className="flex flex-col items-start leading-none">
-        <span className="num text-2xl font-semibold glow-cyan">{clock(simTime)}</span>
+        <span className="num text-2xl max-md:text-lg font-semibold glow-cyan">{clock(simTime)}</span>
         <span className="label mt-1">sim clock</span>
       </div>
       <div className="flex-1 flex flex-col gap-1.5">
@@ -74,7 +74,7 @@ export function SimControls() {
           <span>{clock(end)}</span>
         </div>
       </div>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 max-md:hidden">
         {SPEEDS.map((sp) => (
           <button
             key={sp}

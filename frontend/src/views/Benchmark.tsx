@@ -104,14 +104,14 @@ export default function Benchmark() {
 
   return (
     <div className="h-full overflow-y-auto pr-1 flex flex-col gap-3">
-      <div className="glass rounded-2xl p-4 flex items-center gap-6">
+      <div className="glass rounded-2xl p-4 flex items-center gap-6 max-md:flex-col max-md:items-stretch max-md:gap-3">
         <div>
           <div className="font-display text-xl font-black tracking-[0.14em] grad-text">BENCHMARK ARENA</div>
           <div className="text-[12px] text-dim mt-1">
             <span className="text-amber">{compareLabel}</span> · {q?.orders_total} orders · identical fleet, road network and constraints
           </div>
         </div>
-        <div className="flex-1 grid grid-cols-4 gap-2">
+        <div className="flex-1 grid grid-cols-4 max-md:grid-cols-2 gap-2">
           {heroes.map((h) => (
             <div key={h.k} className="rounded-xl border border-line bg-white/[0.025] px-3 py-2">
               <div className="label !text-[9px]">{h.k}</div>
@@ -144,7 +144,7 @@ export default function Benchmark() {
         return (
           <section className="glass rounded-2xl p-4">
             <div className="label">Business impact · quantum hybrid vs legacy, projected over 300 operating days for this fleet</div>
-            <div className="mt-3 grid grid-cols-4 gap-2">
+            <div className="mt-3 grid grid-cols-4 max-md:grid-cols-2 gap-2">
               {items.map((it) => (
                 <div key={it.k} className="rounded-xl border border-line bg-white/[0.025] px-4 py-3 flex items-center gap-3">
                   <it.icon size={22} className={it.c} />
@@ -209,7 +209,7 @@ export default function Benchmark() {
         </div>
       </section>
 
-      <div className="grid grid-cols-[1.4fr_1fr] gap-3">
+      <div className="grid grid-cols-[1.4fr_1fr] max-md:grid-cols-1 gap-3">
         <section className="glass rounded-2xl p-4">
           <div className="label">Relative to legacy dispatch (= 100, lower is better)</div>
           <div className="h-[280px] mt-3">
@@ -247,7 +247,7 @@ export default function Benchmark() {
       {qs && ss && (
         <section className="glass rounded-2xl p-4">
           <div className="label">Quantum tunnelling vs thermal annealing · same QUBO formulation</div>
-          <div className="mt-3 grid grid-cols-4 gap-2">
+          <div className="mt-3 grid grid-cols-4 max-md:grid-cols-2 gap-2">
             <div className="rounded-xl border border-cyan/40 bg-cyan/[0.06] px-3 py-2">
               <div className="label !text-[9px]">SQA raw route cost</div>
               <div className="num text-xl text-cyan">{fmt(rawQ, 0)} min</div>

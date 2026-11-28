@@ -154,7 +154,7 @@ export function QuantumHardware() {
 
           {r && (
             <>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 max-md:grid-cols-1 gap-4">
                 <Compare title="Returns a valid route" hwLabel={job.mode === "ibm" ? "IBM quantum chip" : "IBM device model"} hw={r.p_valid} ideal={r.ideal_p_valid} rnd={r.random_p_valid} />
                 <Compare title="Returns the optimal route" hwLabel={job.mode === "ibm" ? "IBM quantum chip" : "IBM device model"} hw={r.p_optimal} ideal={r.ideal_p_optimal} rnd={r.random_p_optimal}
                   note={`${(r.p_optimal / r.random_p_optimal).toFixed(1)}× more often than random guessing`} />

@@ -81,6 +81,7 @@ function Kpi({
 }
 
 export function MissionPanel() {
+  const mobileOpen = useStore((st) => st.mobileMetrics);
   const plan = useStore((s) => s.plan);
   const baseline = useStore((s) => s.baseline);
   const scenario = useStore((s) => s.scenario);
@@ -102,7 +103,7 @@ export function MissionPanel() {
   const quantum = plan?.family === "quantum";
 
   return (
-    <aside className="absolute right-3 top-20 bottom-4 z-20 w-[330px] 2xl:w-[350px] flex flex-col gap-3 pointer-events-none overflow-y-auto overscroll-contain no-scrollbar">
+    <aside className={`absolute right-3 top-20 bottom-4 z-20 w-[330px] 2xl:w-[350px] flex flex-col gap-3 pointer-events-none overflow-y-auto overscroll-contain no-scrollbar max-md:left-2 max-md:right-2 max-md:w-auto max-md:top-[96px] max-md:bottom-[150px] max-md:z-[25] max-md:pointer-events-auto max-md:rounded-2xl max-md:bg-[#03040a]/92 max-md:backdrop-blur-md ${mobileOpen ? "" : "max-md:hidden"}`}>
       <div className="relative glass hud rounded-2xl p-4 pointer-events-auto shrink-0">
         <div className="flex items-center justify-between">
           <span className="label whitespace-nowrap">Mission metrics {planStart > 0 && <span className="text-amber">· from {clock(planStart)}</span>}</span>

@@ -24,7 +24,7 @@ export function Shipments() {
         <div><div className="label">Saved by QFleet</div><div className="num text-xl text-lime">{inr0(total.legacy - total.cost)} <span className="text-sm">({total.legacy ? (((total.legacy - total.cost) / total.legacy) * 100).toFixed(0) : 0}%)</span></div></div>
         <div><div className="label">CO₂ avoided</div><div className="num text-xl text-cyan">{total.co2.toFixed(1)} kg</div></div>
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 max-md:grid-cols-1 gap-3">
         {s.shipments.map((sh) => {
           const pct = sh.legacy_cost_inr ? (sh.saved_inr / sh.legacy_cost_inr) * 100 : 0;
           const solver = meta?.solvers?.[sh.solver]?.short ?? sh.solver;
@@ -41,7 +41,7 @@ export function Shipments() {
                   {sh.status === "completed" ? "All delivered" : "On the way"}
                 </span>
               </div>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-4 max-md:grid-cols-2 gap-2">
                 <Stat icon={Wallet} k="Route cost" v={inr0(sh.cost_inr)} />
                 <Stat icon={Atom} k="Saved vs legacy" v={`${pct.toFixed(0)}%`} tone="text-lime" />
                 <Stat icon={Route} k="Distance" v={`${sh.distance_km.toFixed(0)} km`} />

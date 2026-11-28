@@ -75,7 +75,7 @@ export function Autopilot() {
       </section>
 
       {/* live gauges */}
-      <section className="grid grid-cols-4 gap-3">
+      <section className="grid grid-cols-4 max-md:grid-cols-2 gap-3">
         <div className="col-span-2 rounded-xl border border-line bg-white/[0.02] p-4">
           <div className="flex items-baseline justify-between">
             <span className="label">Approved load waiting</span>
@@ -95,7 +95,7 @@ export function Autopilot() {
       </section>
 
       {/* rules */}
-      <section className={`grid grid-cols-2 gap-3 transition-opacity ${r.enabled ? "" : "opacity-60"}`}>
+      <section className={`grid grid-cols-2 max-md:grid-cols-1 gap-3 transition-opacity ${r.enabled ? "" : "opacity-60"}`}>
         <Rule icon={CheckCheck} title="Approve requests automatically" on={r.auto_approve} onToggle={(v) => save({ auto_approve: v })}
           text="Central stock is allocated the moment a request arrives, most urgent first. Requests the central store can't fill wait as backorders." />
         <Rule icon={Siren} title="Send critical requests at once" on={r.on_critical} onToggle={(v) => save({ on_critical: v })}

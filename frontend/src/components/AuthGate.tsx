@@ -47,7 +47,7 @@ export function AuthGate() {
     <div className="fixed inset-0 z-[58] bg-void overflow-hidden">
       <div className="absolute inset-0 grid-bg opacity-50" />
       <div className="absolute inset-0 opacity-70"><QuantumField density={0.6} /></div>
-      <div className="absolute inset-0 grid place-items-center p-4">
+      <div className="absolute inset-0 overflow-y-auto grid place-items-center p-4 max-md:place-items-start max-md:py-6">
         <motion.form onSubmit={submit} initial={{ opacity: 0, y: 18, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.45 }}
           className="glass-strong hud rounded-2xl w-[400px] max-w-full p-7 flex flex-col gap-4">
           <div className="flex items-center gap-3">
@@ -87,8 +87,12 @@ export function AuthGate() {
             {busy ? <Loader2 size={15} className="animate-spin" /> : <ArrowRight size={15} />}
             {mode === "in" ? "SIGN IN" : "CREATE ACCOUNT"}
           </button>
-          <div className="flex items-center gap-2 text-[11px] text-faint justify-center">
-            <ShieldCheck size={13} className="text-lime" /> Secured by Neon Auth (Better Auth) · sessions verified on our server
+          <button type="button" onClick={() => s.continueAsGuest()} disabled={busy}
+            className="w-full rounded-xl border border-line hover:border-cyan/50 text-dim hover:text-ink text-[13px] font-semibold py-2.5 transition-colors">
+            Explore the demo without an account
+          </button>
+          <div className="flex items-center gap-2 text-[11px] text-faint justify-center text-center">
+            <ShieldCheck size={13} className="text-lime shrink-0" /> Secured by Neon Auth (Better Auth) · sessions verified on our server
           </div>
         </motion.form>
       </div>

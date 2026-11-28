@@ -58,7 +58,7 @@ export function Network() {
   const [cx, cy] = proj(central);
 
   return (
-    <div className="grid grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] gap-3 h-full min-h-0">
+    <div className="grid grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] max-md:grid-cols-1 gap-3 h-full min-h-0">
       <div className="rounded-2xl border border-line bg-[radial-gradient(ellipse_at_center,rgba(0,229,255,0.06),transparent_70%)] relative overflow-hidden">
         <div className="absolute left-4 top-3 label">Hub-and-spoke network · {s.overview?.org.city_name}</div>
         <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-full" role="img" aria-label="Map of the central store and its branches, coloured by stock health">

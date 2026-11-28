@@ -20,6 +20,10 @@ ORIGIN = f"{_parts.scheme}://{_parts.netloc}" if _parts else ""
 _jwks = jwt.PyJWKClient(f"{AUTH_URL}/.well-known/jwks.json", cache_keys=True, lifespan=3600) if AUTH_URL else None
 
 DEMO_USER = {"id": "demo", "email": None, "name": "Demo operator", "demo": True}
+# Guests (no token) may explore the shared demo organisations, so judges can try QFleet on any network
+# even if they can't or won't sign in. Set ALLOW_GUEST=0 to require sign-in for everything.
+ALLOW_GUEST = os.environ.get("ALLOW_GUEST", "1").strip().lower() not in ("0", "false", "no")
+GUEST_USER = {"id": "guest", "email": None, "name": "Guest", "demo": True, "guest": True}
 
 
 def verify(token: str) -> dict:
@@ -36,6 +40,8 @@ def current_user(authorization: str | None = Header(default=None)) -> dict:
     if not AUTH_URL:
         return DEMO_USER
     if not authorization or not authorization.lower().startswith("bearer "):
+        if ALLOW_GUEST:
+            return GUEST_USER  # shared demo organisations only (see inv_api access rules)
         raise HTTPException(401, "Sign in required")
     try:
         return verify(authorization.split(" ", 1)[1].strip())

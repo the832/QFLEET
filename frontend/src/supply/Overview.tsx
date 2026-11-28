@@ -74,7 +74,7 @@ export function Overview() {
             <button className="text-[11.5px] text-cyan hover:underline" onClick={() => s.set({ tab: "autopilot" })}>Automate steps 2–3 →</button>
           )}
         </div>
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-4 max-md:grid-cols-2 max-sm:grid-cols-1 gap-3">
           {steps.map((st, i) => {
             const hot = i === next;
             return (
@@ -111,7 +111,7 @@ export function Overview() {
       </section>
 
       {/* KPIs */}
-      <section className="grid grid-cols-6 gap-2.5">
+      <section className="grid grid-cols-6 max-md:grid-cols-2 gap-2.5">
         <Kpi icon={ShieldCheck} label="Service level" value={`${k.service_level_pct.toFixed(0)}%`}
           tone={k.service_level_pct >= 85 ? "text-lime" : k.service_level_pct >= 65 ? "text-amber" : "text-danger"}
           sub="branch items above reorder point" hint="Share of branch stock lines with at least the reorder-point days of cover" />
@@ -125,7 +125,7 @@ export function Overview() {
           tone="text-lime" sub={`${k.delivered} requests delivered`} />
       </section>
 
-      <section className="grid grid-cols-[1.35fr_1fr] gap-3 min-h-0">
+      <section className="grid grid-cols-[1.35fr_1fr] max-md:grid-cols-1 gap-3 min-h-0">
         {/* alerts */}
         <div className="rounded-2xl border border-line bg-white/[0.02] p-4 min-w-0">
           <div className="flex items-center justify-between mb-3">
@@ -201,7 +201,7 @@ export function Overview() {
       {ov.recent_shipments.length > 0 && (
         <section className="rounded-2xl border border-line bg-white/[0.02] p-4">
           <div className="label mb-2">Recent dispatch waves</div>
-          <div className="grid grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-3 max-md:grid-cols-1 gap-2.5">
             {ov.recent_shipments.slice(0, 3).map((sh) => (
               <button key={sh.id} onClick={() => s.watch(sh.id)}
                 className="text-left rounded-xl border border-line hover:border-cyan/60 bg-white/[0.02] p-3 transition-colors group">

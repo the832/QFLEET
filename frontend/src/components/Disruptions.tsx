@@ -25,7 +25,7 @@ export function DisruptionDock() {
       .sort((a, b) => remaining(b.vehicle_id) - remaining(a.vehicle_id))[0]?.vehicle_id;
 
   return (
-    <div className="absolute left-[76px] top-20 z-20 glass rounded-2xl p-3 w-[236px]">
+    <div className="absolute left-[76px] top-20 z-20 glass rounded-2xl p-3 w-[236px] max-md:left-2 max-md:top-[58px] max-md:w-[172px] max-md:p-2">
       <div className="label flex items-center gap-1.5">
         <Siren size={12} className="text-magenta" /> Disruption simulator
       </div>
@@ -135,7 +135,7 @@ export function Toasts() {
     quantum: "border-cyan/60 text-cyan shadow-[0_0_30px_-6px_rgba(0,229,255,0.8)]",
   };
   return (
-    <div className="absolute top-20 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 items-center pointer-events-none">
+    <div className="absolute top-20 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 items-center pointer-events-none max-md:top-[56px] max-md:w-[calc(100vw-16px)]">
       <AnimatePresence>
         {toasts.map((t) => (
           <motion.div

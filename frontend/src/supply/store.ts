@@ -12,6 +12,8 @@ interface SupplyState {
   status: InvStatus | null;
   user: AuthUser | null;
   needsSignIn: boolean;
+  /** exploring the shared demo organisations without an account */
+  guest: boolean;
   orgs: Org[];
   orgId: number | null;
   role: Role;
@@ -37,6 +39,8 @@ interface SupplyState {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (name: string, email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  continueAsGuest: () => Promise<void>;
+  showSignIn: () => void;
   loadOrgs: () => Promise<void>;
   selectOrg: (id: number) => Promise<void>;
   refresh: (parts?: ("overview" | "stock" | "reqs" | "shipments" | "movements")[]) => Promise<void>;
@@ -50,6 +54,22 @@ interface SupplyState {
 
 const toast = (kind: "ok" | "warn" | "err" | "quantum", text: string) => useStore.getState().toast(kind, text);
 const ORG_KEY = "qfleet.org";
+const GUEST_KEY = "qfleet.guest";
+const readGuest = () => {
+  try {
+    return localStorage.getItem(GUEST_KEY) === "1";
+  } catch {
+    return false;
+  }
+};
+const writeGuest = (on: boolean) => {
+  try {
+    if (on) localStorage.setItem(GUEST_KEY, "1");
+    else localStorage.removeItem(GUEST_KEY);
+  } catch {
+    /* storage unavailable */
+  }
+};
 let booting = false;
 
 export const useSupply = create<SupplyState>((set, get) => ({
@@ -57,6 +77,7 @@ export const useSupply = create<SupplyState>((set, get) => ({
   status: null,
   user: null,
   needsSignIn: false,
+  guest: false,
   orgs: [],
   orgId: null,
   role: "central",
@@ -81,10 +102,11 @@ export const useSupply = create<SupplyState>((set, get) => ({
     booting = true;
     try {
       const status = await inv.status();
-      initAuth(status.auth ? status.auth_url : null);
+      await initAuth(status.auth ? status.auth_url : null);
       const user = status.auth ? await currentUser() : null;
-      set({ status, user, needsSignIn: status.auth && !user, booted: true });
-      if (!status.auth || user) await get().loadOrgs();
+      const guest = !user && status.auth && readGuest();
+      set({ status, user, guest, needsSignIn: status.auth && !user && !guest, booted: true });
+      if (!status.auth || user || guest) await get().loadOrgs();
     } catch (e) {
       set({ booted: true });
       toast("err", `Supply network offline: ${(e as Error).message}`);
@@ -93,7 +115,8 @@ export const useSupply = create<SupplyState>((set, get) => ({
 
   signIn: async (email, password) => {
     const user = await signIn(email, password);
-    set({ user, needsSignIn: !user });
+    if (user) writeGuest(false);
+    set({ user, needsSignIn: !user, guest: false });
     if (user) {
       toast("ok", `Signed in as ${user.email ?? user.name}`);
       await get().loadOrgs();
@@ -102,7 +125,8 @@ export const useSupply = create<SupplyState>((set, get) => ({
 
   signUp: async (name, email, password) => {
     const user = await signUp(name, email, password);
-    set({ user, needsSignIn: !user });
+    if (user) writeGuest(false);
+    set({ user, needsSignIn: !user, guest: false });
     if (user) {
       toast("ok", `Welcome to QFleet, ${user.name ?? user.email}`);
       await get().loadOrgs();
@@ -111,8 +135,18 @@ export const useSupply = create<SupplyState>((set, get) => ({
 
   signOut: async () => {
     await signOut();
-    set({ user: null, needsSignIn: authEnabled(), orgs: [], orgId: null, overview: null, stock: null, reqs: [], shipments: [], movements: [] });
+    writeGuest(false);
+    set({ user: null, guest: false, needsSignIn: authEnabled(), orgs: [], orgId: null, overview: null, stock: null, reqs: [], shipments: [], movements: [] });
   },
+
+  continueAsGuest: async () => {
+    writeGuest(true);
+    set({ guest: true, needsSignIn: false });
+    toast("ok", "Exploring the shared demo. Sign in any time to create your own organisation.");
+    await get().loadOrgs();
+  },
+
+  showSignIn: () => set({ needsSignIn: true }),
 
   loadOrgs: async () => {
     try {

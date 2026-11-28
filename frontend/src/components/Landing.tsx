@@ -35,7 +35,7 @@ export function Landing({ onEnter }: { onEnter: () => void }) {
   }, [onEnter]);
 
   return (
-    <div className="fixed inset-0 overflow-hidden bg-void scanlines">
+    <div className="fixed inset-0 overflow-hidden max-md:overflow-y-auto max-md:overscroll-contain bg-void scanlines">
       <div className="absolute inset-0 grid-bg opacity-60" />
       <div
         className="absolute inset-0"
@@ -46,16 +46,16 @@ export function Landing({ onEnter }: { onEnter: () => void }) {
       />
       <QuantumField />
 
-      <div className="relative z-10 h-full flex flex-col">
-        <header className="flex items-center justify-between px-8 pt-6">
+      <div className="relative z-10 h-full max-md:h-auto max-md:min-h-full flex flex-col">
+        <header className="flex items-center justify-between gap-3 px-8 pt-6 max-md:px-4 max-md:pt-4">
           <div className="flex items-center gap-3">
             <LogoMark size={30} spin />
-            <span className="font-display text-xs tracking-[0.35em] text-dim">TEAM NONCHALANT</span>
+            <span className="font-display text-xs tracking-[0.35em] text-dim max-md:text-[10px] max-md:tracking-[0.25em]">TEAM NONCHALANT</span>
           </div>
-          <div className="label">Problem #12 · Quantum Fleet Management Optimization</div>
+          <div className="label max-md:text-right max-md:!text-[9px]">Problem #12 · Quantum Fleet Management Optimization</div>
         </header>
 
-        <main className="flex-1 flex flex-col items-center justify-center px-6 text-center">
+        <main className="flex-1 flex flex-col items-center justify-center px-6 text-center max-md:px-4 max-md:py-6">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -106,12 +106,12 @@ export function Landing({ onEnter }: { onEnter: () => void }) {
           >
             ENTER COMMAND CENTER <ArrowRight size={18} />
           </motion.button>
-          <div className="mt-3 text-[11px] text-faint">
+          <div className="mt-3 text-[11px] text-faint max-md:hidden">
             press <span className="num text-dim">Enter</span>
           </div>
         </main>
 
-        <footer className="grid grid-cols-2 md:grid-cols-4 gap-3 px-8 pb-8">
+        <footer className="grid grid-cols-2 md:grid-cols-4 gap-3 px-8 pb-8 max-md:px-4 max-md:pb-6">
           {FEATURES.map((f, i) => (
             <motion.div
               key={f.title}

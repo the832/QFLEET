@@ -33,13 +33,13 @@ export function LogoMark({ size = 34, spin = false }: { size?: number; spin?: bo
 
 export function Wordmark({ compact = false }: { compact?: boolean }) {
   return (
-    <div className="flex items-center gap-3 select-none">
+    <div className={`flex items-center gap-3 select-none ${compact ? "max-md:gap-2" : ""}`}>
       <LogoMark size={compact ? 30 : 40} spin />
       <div className="leading-none">
-        <div className={`font-display font-black tracking-[0.18em] grad-text ${compact ? "text-[17px]" : "text-2xl"}`}>
+        <div className={`font-display font-black tracking-[0.18em] grad-text ${compact ? "text-[17px] max-md:text-[14px] max-md:tracking-[0.12em]" : "text-2xl"}`}>
           QFLEET
         </div>
-        <div className="mt-1 text-[9px] font-semibold tracking-[0.32em] text-dim">
+        <div className={`mt-1 text-[9px] font-semibold tracking-[0.32em] text-dim ${compact ? "max-[400px]:hidden" : ""}`}>
           BY TEAM <span className="text-ink">NONCHALANT</span>
         </div>
       </div>

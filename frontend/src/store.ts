@@ -67,6 +67,8 @@ interface State {
   events: FleetEvent[];
   toasts: Toast[];
   replans: number;
+  /** phones: whether the mission-metrics sheet is open over the map */
+  mobileMetrics: boolean;
 
   enter: () => void;
   setView: (v: View) => void;
@@ -154,6 +156,7 @@ export const useStore = create<State>((set, get) => ({
   events: [],
   toasts: [],
   replans: 0,
+  mobileMetrics: false,
 
   enter: () => set({ entered: true }),
   setView: (view) => set({ view }),

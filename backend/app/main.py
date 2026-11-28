@@ -6,10 +6,10 @@ import threading
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, Header, HTTPException
+from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -182,7 +182,8 @@ def qpu_run(req: HardwareReq, authorization: str | None = Header(default=None)):
     if req.mode not in ("fake", "ibm"):
         raise HTTPException(400, "mode must be fake or ibm")
     if req.mode == "ibm" and AUTH_URL:
-        current_user(authorization)  # real QPU time costs credits: signed-in users only
+        if current_user(authorization).get("guest"):  # real QPU time costs credits: signed-in users only
+            raise HTTPException(401, "Sign in to run on real IBM quantum hardware")
     _check_size(req.scenario)
     prob = optimizer.build_problem(req.scenario)
     try:
@@ -212,6 +213,31 @@ def scaling(req: ScalingReq):
     prob = optimizer.build_problem(req.scenario)
     with _Slot():
         return run_scaling(prob, trials=req.trials)
+
+
+# Same-origin sign-in proxy: /neon-auth/* -> Neon Auth. The browser then only talks to our own domain, so
+# networks whose DNS can't resolve *.neonauth.*.neon.tech still sign in, and the session cookie is first-party.
+# (On Vercel the identical route is a rewrite in frontend/vercel.json.)
+_PROXY_DROP = {"host", "content-length", "connection", "accept-encoding", "transfer-encoding", "keep-alive"}
+_PROXY_PASS = {"content-type", "set-cookie", "set-auth-jwt", "location", "cache-control"}
+
+
+@app.api_route("/neon-auth/{path:path}", methods=["GET", "POST"])
+async def neon_auth_proxy(path: str, request: Request):
+    import httpx
+
+    from .auth import AUTH_URL
+    if not AUTH_URL:
+        raise HTTPException(404, "Sign-in is not configured")
+    headers = {k: v for k, v in request.headers.items() if k.lower() not in _PROXY_DROP}
+    async with httpx.AsyncClient(timeout=30, follow_redirects=False) as client:
+        r = await client.request(request.method, f"{AUTH_URL}/{path}", params=request.query_params,
+                                 content=await request.body(), headers=headers)
+    out = Response(content=r.content, status_code=r.status_code)
+    for k, v in r.headers.multi_items():
+        if k.lower() in _PROXY_PASS:
+            out.headers.append(k, v)
+    return out
 
 
 # Serve the built frontend (single-process deploy).

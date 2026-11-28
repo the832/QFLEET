@@ -14,7 +14,7 @@ const tooltipStyle = {
 function Card({ title, sub, children, className = "", right }: { title: string; sub?: string; children: React.ReactNode; className?: string; right?: React.ReactNode }) {
   return (
     <section className={`glass rounded-2xl p-4 ${className}`}>
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-3 max-md:flex-col">
         <div>
           <div className="label">{title}</div>
           {sub && <div className="text-[12px] text-dim mt-1">{sub}</div>}
@@ -48,9 +48,9 @@ function Pipeline({ q, nOrders, src }: { q: QuantumTelemetry; nOrders: number; s
     { icon: Truck, title: "Dispatch", text: `${q.valid_routes_pct.toFixed(0)}% routes valid straight from the annealer`, c: "text-lime" },
   ];
   return (
-    <div className="flex items-stretch gap-2">
+    <div className="flex items-stretch gap-2 max-md:flex-col">
       {steps.map((s, i) => (
-        <div key={s.title} className="flex items-center gap-2 flex-1 min-w-0">
+        <div key={s.title} className="flex items-center gap-2 flex-1 min-w-0 max-md:flex-col max-md:items-stretch">
           <div className="flex-1 rounded-xl border border-line bg-white/[0.025] p-3 h-full">
             <div className="flex items-center gap-2">
               <s.icon size={16} className={s.c} />
@@ -58,7 +58,7 @@ function Pipeline({ q, nOrders, src }: { q: QuantumTelemetry; nOrders: number; s
             </div>
             <div className="text-[11px] text-dim mt-1.5 leading-snug">{s.text}</div>
           </div>
-          {i < steps.length - 1 && <ArrowRight size={16} className="text-faint shrink-0" />}
+          {i < steps.length - 1 && <ArrowRight size={16} className="text-faint shrink-0 max-md:rotate-90 max-md:self-center" />}
         </div>
       ))}
     </div>
@@ -149,8 +149,8 @@ function QuboHeatmap({ q }: { q: QuantumTelemetry }) {
       }
   }, [qb]);
   return (
-    <div className="flex gap-4 items-start">
-      <canvas ref={ref} width={300} height={300} className="w-[230px] h-[230px] rounded-lg border border-line" style={{ imageRendering: "pixelated" }} />
+    <div className="flex gap-4 items-start max-md:flex-col">
+      <canvas ref={ref} width={300} height={300} className="w-[230px] h-[230px] max-md:self-center rounded-lg border border-line" style={{ imageRendering: "pixelated" }} />
       <div className="text-[12px] text-dim leading-relaxed flex-1">
         <div className="text-ink font-semibold text-sm">Q matrix · {qb.n}×{qb.n}</div>
         <div className="num text-[11px] mt-1">{qb.nnz.toLocaleString()} non-zero couplings</div>
@@ -278,7 +278,7 @@ function QaoaLab() {
       title="QAOA circuit lab · gate-model quantum computing"
       sub="Takes the first stops of a planned route, encodes the sequencing QUBO into a Qiskit circuit and optimises the variational angles γ, β on an exact statevector simulator."
       right={
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <select className="input" value={veh} onChange={(e) => setVeh(e.target.value)} disabled={!eligible.length}>
             {!eligible.length && <option value="">no route with 2+ stops</option>}
             {eligible.map((r) => (
@@ -310,7 +310,7 @@ function QaoaLab() {
         </div>
       ) : (
         <div className="flex flex-col gap-4">
-          <div className="grid grid-cols-6 gap-2">
+          <div className="grid grid-cols-6 max-md:grid-cols-2 gap-2">
             <Stat k="Qubits" v={r.n_qubits} />
             <Stat k="Hilbert space" v={r.hilbert_dim.toLocaleString()} />
             <Stat k="P(valid tour)" v={`${(r.p_valid * 100).toFixed(1)}%`} accent="text-lime" />
@@ -319,7 +319,7 @@ function QaoaLab() {
             <Stat k="Shots · optimal" v={`${r.shots.optimal}/${r.shots.total}`} accent="text-amber" />
           </div>
           <CircuitDiagram r={r} />
-          <div className="grid grid-cols-[1.3fr_1fr_auto] gap-4 items-start">
+          <div className="grid grid-cols-[1.3fr_1fr_auto] max-md:grid-cols-1 gap-4 items-start">
             <div>
               <div className="label mb-2">Measurement distribution · top states</div>
               <div className="h-[190px]">
@@ -410,7 +410,7 @@ function ScalingExperiment() {
           {busy ? "Annealing sub-routes of 25 → 169 qubits with both methods…" : "Shows how solution quality holds up as the problem grows, which is the core argument for quantum optimisation."}
         </div>
       ) : (
-        <div className="grid grid-cols-[1.6fr_1fr] gap-4 items-center">
+        <div className="grid grid-cols-[1.6fr_1fr] max-md:grid-cols-1 gap-4 items-center">
           <div className="h-[240px]">
             <ResponsiveContainer>
               <LineChart data={rows}>
@@ -424,7 +424,7 @@ function ScalingExperiment() {
             </ResponsiveContainer>
           </div>
           <div className="flex flex-col gap-2">
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 max-md:grid-cols-1 gap-2">
               <Stat k={`SQA gap @ ${last?.qubits} qubits`} v={`${last?.sqa_gap_pct.toFixed(1)}%`} />
               <Stat k={`SA gap @ ${last?.qubits} qubits`} v={`${last?.sa_gap_pct.toFixed(1)}%`} accent="text-violet" />
               <Stat k="SQA valid samples" v={`${Math.round(rows.reduce((a, r) => a + r.sqa_valid_pct, 0) / rows.length)}%`} accent="text-lime" />
@@ -493,12 +493,12 @@ export default function QuantumLab() {
           </span>
         </div>
       )}
-      <div className="glass rounded-2xl p-4 flex items-center gap-6">
+      <div className="glass rounded-2xl p-4 flex items-center gap-6 max-md:flex-col max-md:items-stretch max-md:gap-3">
         <div>
           <div className="font-display text-xl font-black tracking-[0.14em] grad-text">QUANTUM LAB</div>
           <div className="text-[12px] text-dim mt-1">{plan!.solver_label}</div>
         </div>
-        <div className="flex-1 grid grid-cols-5 gap-2">
+        <div className="flex-1 grid grid-cols-5 max-md:grid-cols-2 gap-2">
           <Stat k="Total logical qubits" v={q.total_qubits} />
           <Stat k="Allocation QUBO" v={`${q.stage1.n_vars} vars`} accent="text-violet" />
           <Stat k="Valid annealer routes" v={`${q.valid_routes_pct.toFixed(0)}%`} accent="text-lime" />
@@ -511,7 +511,7 @@ export default function QuantumLab() {
         <Pipeline q={q} nOrders={plan!.metrics.orders_total} src={plan!.matrix_source} />
       </Card>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 max-md:grid-cols-1 gap-3">
         <Card title="Annealing dynamics · stage 1" sub="Energy of the best Trotter replica falls as the transverse field Γ is switched off and replicas lock together (J⊥ rises).">
           <div className="h-[230px]">
             <ResponsiveContainer>
@@ -546,7 +546,7 @@ export default function QuantumLab() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-[1.1fr_1fr] gap-3">
+      <div className="grid grid-cols-[1.1fr_1fr] max-md:grid-cols-1 gap-3">
         <Card title="Problem Hamiltonian · allocation QUBO">
           <QuboHeatmap q={q} />
         </Card>
@@ -572,7 +572,7 @@ export default function QuantumLab() {
       </div>
 
       <Card title="Stage 2 · per-vehicle route QUBOs" sub="Raw annealer sample cost vs. after classical 2-opt polish. 'Valid' = the measured bit-string was a feasible permutation with no repair.">
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-2">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] max-md:grid-cols-1 gap-2">
           {q.stage2.map((s) => {
             const route = plan!.routes.find((r) => r.vehicle_id === s.vehicle_id);
             return (

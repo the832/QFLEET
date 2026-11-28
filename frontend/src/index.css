@@ -70,6 +70,13 @@ body,
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
+/* phones: nested panels can't blur the map behind them, so make them near-opaque for legibility */
+@media (max-width: 767px) {
+  .glass {
+    background: linear-gradient(160deg, rgba(14, 19, 38, 0.96), rgba(6, 8, 18, 0.97));
+  }
+}
+
 .glass-strong {
   background: linear-gradient(160deg, rgba(20, 28, 56, 0.92), rgba(8, 10, 22, 0.95));
   border: 1px solid rgba(0, 229, 255, 0.22);
@@ -137,6 +144,8 @@ body,
   color: transparent;
 }
 
+/* ---------- buttons & inputs (components layer, so responsive utilities can override them) ---------- */
+@layer components {
 /* ---------- buttons ---------- */
 .btn {
   display: inline-flex;
@@ -220,6 +229,8 @@ body,
 select.input option {
   background: #0b0f20;
 }
+}
+
 
 input[type="range"] {
   accent-color: #00e5ff;

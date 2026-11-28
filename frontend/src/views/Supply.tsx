@@ -60,9 +60,9 @@ export default function Supply() {
   }
 
   return (
-    <div className="solid-panel rounded-2xl h-full flex overflow-hidden relative">
+    <div className="solid-panel rounded-2xl h-full flex overflow-hidden relative max-md:block max-md:overflow-y-auto">
       {/* left rail */}
-      <aside className="w-[232px] shrink-0 border-r border-line flex flex-col p-3 gap-3 bg-black/10">
+      <aside className="w-[232px] shrink-0 border-r border-line flex flex-col p-3 gap-3 bg-black/10 max-md:w-full max-md:border-r-0 max-md:border-b max-md:gap-2">
         <OrgSwitcher />
         {isBranchUser ? (
           <div className="rounded-xl border border-violet/30 bg-violet/[0.06] px-3 py-2">
@@ -82,10 +82,10 @@ export default function Supply() {
         )}
 
         {s.role === "central" ? (
-          <nav className="flex flex-col gap-0.5">
+          <nav className="flex flex-col gap-0.5 max-md:flex-row max-md:overflow-x-auto no-scrollbar max-md:-mx-1 max-md:px-1">
             {TABS.map((t) => (
               <button key={t.key} onClick={() => s.set({ tab: t.key })} title={t.desc}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-colors ${s.tab === t.key ? "bg-cyan/12 text-ink shadow-[inset_2px_0_0_#00e5ff]" : "text-dim hover:text-ink hover:bg-white/[0.04]"}`}>
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-colors max-md:shrink-0 max-md:whitespace-nowrap ${s.tab === t.key ? "bg-cyan/12 text-ink shadow-[inset_2px_0_0_#00e5ff]" : "text-dim hover:text-ink hover:bg-white/[0.04]"}`}>
                 <t.icon size={15} className={s.tab === t.key ? "text-cyan" : ""} />
                 <span className="flex-1 text-left">{t.label}</span>
                 {!!badge[t.key] && <span className={`num text-[10px] px-1.5 rounded-full ${t.key === "stock" ? "bg-danger/20 text-danger" : "bg-cyan/15 text-cyan"}`}>{badge[t.key]}</span>}
@@ -113,13 +113,13 @@ export default function Supply() {
           </div>
         )}
 
-        <div className="flex-1" />
+        <div className="flex-1 max-md:hidden" />
         <UserChip />
       </aside>
 
       {/* main */}
-      <main className="flex-1 min-w-0 flex flex-col">
-        <header className="px-5 pt-4 pb-3 flex items-center gap-3 border-b border-line">
+      <main className="flex-1 min-w-0 flex flex-col max-md:block">
+        <header className="px-5 pt-4 pb-3 flex items-center gap-3 border-b border-line max-md:flex-wrap max-md:px-3 max-md:pt-3 max-md:gap-2">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <h1 className="text-lg font-semibold">{s.role === "central" ? tab.label : "Branch portal"}</h1>
@@ -159,7 +159,7 @@ export default function Supply() {
             </motion.div>
           )}
         </AnimatePresence>
-        <div className="flex-1 min-h-0 overflow-y-auto p-5">
+        <div className="flex-1 min-h-0 overflow-y-auto p-5 max-md:p-3 max-md:overflow-visible">
           {s.role === "branch" ? <BranchPortal /> : (
             <>
               {s.tab === "overview" && <Overview />}
@@ -227,6 +227,18 @@ function UserChip() {
   const s = useSupply();
   if (!s.status?.auth) {
     return <div className="text-[10.5px] text-faint px-1 flex items-center gap-1.5"><UserRound size={12} /> Demo mode · sign-in not configured</div>;
+  }
+  if (s.guest && !s.user) {
+    return (
+      <div className="flex items-center gap-2 px-1">
+        <div className="w-7 h-7 rounded-full grid place-items-center bg-white/10 text-dim"><UserRound size={14} /></div>
+        <div className="flex-1 min-w-0">
+          <div className="text-[11.5px] font-medium">Guest</div>
+          <div className="text-[10px] text-faint truncate">shared demo data</div>
+        </div>
+        <button className="btn !py-1 !px-2 !text-[11px]" onClick={() => s.showSignIn()}>Sign in</button>
+      </div>
+    );
   }
   if (!s.user) return null;
   return (

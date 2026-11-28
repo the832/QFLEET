@@ -112,15 +112,15 @@ table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:4p
   };
 
   return (
-    <div className="h-full flex flex-col gap-3 min-h-0">
-      <div className="glass rounded-2xl p-4 flex items-center gap-4">
-        <div>
+    <div className="h-full flex flex-col gap-3 min-h-0 max-md:overflow-y-auto">
+      <div className="glass rounded-2xl p-4 flex items-center gap-4 max-md:flex-wrap max-md:gap-2">
+        <div className="max-md:w-full">
           <div className="font-display text-xl font-black tracking-[0.14em] grad-text">DISPATCH SCHEDULE</div>
           <div className="text-[12px] text-dim mt-1">
             {plan.solver_label} · {scenario.city_name} · {rows.length} stops · {used.length} vehicles
           </div>
         </div>
-        <div className="flex-1" />
+        <div className="flex-1 max-md:hidden" />
         <button className="btn" onClick={exportCsv}>
           <Download size={14} /> CSV
         </button>
@@ -133,9 +133,9 @@ table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:4p
       </div>
 
       <section className="glass rounded-2xl p-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between max-md:flex-wrap max-md:gap-2">
           <span className="label">Fleet timeline</span>
-          <span className="text-[11px] text-dim flex gap-3">
+          <span className="text-[11px] text-dim flex flex-wrap gap-3">
             <span><span className="inline-block w-3 h-1.5 rounded bg-white/30 mr-1" />driving</span>
             {(["critical", "high", "standard"] as const).map((p) => (
               <span key={p}>
@@ -148,7 +148,7 @@ table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:4p
         <div className="mt-3 relative">
           <div className="ml-[110px] relative h-5">
             {ticks.map((t) => (
-              <span key={t} className="absolute -translate-x-1/2 text-[10px] num text-faint" style={{ left: `${x(t)}%` }}>
+              <span key={t} className={`absolute -translate-x-1/2 text-[10px] num text-faint ${ticks.indexOf(t) % 2 ? "max-md:hidden" : ""}`} style={{ left: `${x(t)}%` }}>
                 {clock(t)}
               </span>
             ))}
