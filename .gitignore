@@ -1,0 +1,11 @@
+node_modules/
+frontend/dist/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+
+backend/.env
+backend/qfleet_inventory.db
+frontend/.env.local

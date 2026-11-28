@@ -1,0 +1,18 @@
+# secrets and local state never go into the image
+**/.env
+**/.env.*
+!backend/.env.example
+backend/qfleet_inventory.db
+# build outputs and environments are rebuilt inside the image
+**/node_modules
+**/.venv
+**/__pycache__
+**/*.pyc
+frontend/dist
+# not needed to run the app
+.git
+pitch
+*.pptx
+*.pdf
+*.md
+!README.md

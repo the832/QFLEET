@@ -1,0 +1,11 @@
+# Production-like local run: docker compose up --build  →  http://localhost:8787
+services:
+  qfleet:
+    build: .
+    image: qfleet:latest
+    env_file: backend/.env          # DATABASE_URL, NEON_AUTH_URL, optional IBM_QUANTUM_TOKEN
+    environment:
+      PORT: "8787"
+    ports:
+      - "8787:8787"
+    restart: unless-stopped

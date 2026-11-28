@@ -1,0 +1,12 @@
+# Keep `railway up` uploads small; secrets are also excluded (and git-ignored)
+**/.env
+**/.env.*
+!backend/.env.example
+backend/qfleet_inventory.db
+**/node_modules
+**/.venv
+**/__pycache__
+frontend/dist
+pitch
+*.pptx
+*.pdf
