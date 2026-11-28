@@ -23,7 +23,8 @@ async function proxyAvailable(): Promise<boolean> {
     const t = setTimeout(() => ctrl.abort(), 6000);
     const r = await fetch(`${window.location.origin}/neon-auth/get-session`, { credentials: "include", signal: ctrl.signal });
     clearTimeout(t);
-    return (r.headers.get("content-type") ?? "").includes("json");
+    // must be a working Neon response (200 + JSON), not an error page or a rejected proxy (e.g. 400 INVALID_HOSTNAME)
+    return r.ok && (r.headers.get("content-type") ?? "").includes("json");
   } catch {
     return false;
   }

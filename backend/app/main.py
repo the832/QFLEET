@@ -217,8 +217,10 @@ def scaling(req: ScalingReq):
 
 # Same-origin sign-in proxy: /neon-auth/* -> Neon Auth. The browser then only talks to our own domain, so
 # networks whose DNS can't resolve *.neonauth.*.neon.tech still sign in, and the session cookie is first-party.
-# (On Vercel the identical route is a rewrite in frontend/vercel.json.)
+# On Vercel, frontend/vercel.json rewrites /neon-auth/* to this route on the Railway backend (a direct Vercel
+# rewrite to Neon fails: Vercel adds x-forwarded-host, which Neon rejects).
 _PROXY_DROP = {"host", "content-length", "connection", "accept-encoding", "transfer-encoding", "keep-alive"}
+_PROXY_DROP_PREFIX = ("x-forwarded-", "forwarded", "x-real-ip", "x-vercel-", "x-railway-", "cf-", "x-envoy-", "via")
 _PROXY_PASS = {"content-type", "set-cookie", "set-auth-jwt", "location", "cache-control"}
 
 
@@ -229,7 +231,10 @@ async def neon_auth_proxy(path: str, request: Request):
     from .auth import AUTH_URL
     if not AUTH_URL:
         raise HTTPException(404, "Sign-in is not configured")
-    headers = {k: v for k, v in request.headers.items() if k.lower() not in _PROXY_DROP}
+    # Neon rejects requests whose forwarding headers name another host (INVALID_HOSTNAME), and Vercel/Railway
+    # edges add them, so strip every proxy/CDN header and present the request as coming straight from the browser.
+    headers = {k: v for k, v in request.headers.items()
+               if k.lower() not in _PROXY_DROP and not k.lower().startswith(_PROXY_DROP_PREFIX)}
     async with httpx.AsyncClient(timeout=30, follow_redirects=False) as client:
         r = await client.request(request.method, f"{AUTH_URL}/{path}", params=request.query_params,
                                  content=await request.body(), headers=headers)

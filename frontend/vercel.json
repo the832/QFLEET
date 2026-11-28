@@ -7,7 +7,7 @@
   "rewrites": [
     {
       "source": "/neon-auth/:path*",
-      "destination": "https://ep-shiny-lake-bib7iq3i.neonauth.c-5.ap-southeast-1.aws.neon.tech/neondb/auth/:path*"
+      "destination": "https://qfleet-production.up.railway.app/neon-auth/:path*"
     },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
